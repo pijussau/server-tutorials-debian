@@ -30,3 +30,4 @@ To enable 100.000 connections to a MySQL database:
       service mysql restart
       
     https://stackoverflow.com/questions/32760202/buffered-warning-changed-limits-max-connections-214-requested-800
+    https://www.ucartz.com/clients/index.php?rp=/knowledgebase/1059/Guide-to-Raise-ulimit-open-files-and-MySQL-open_files_limit.html
