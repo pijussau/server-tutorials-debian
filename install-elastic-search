@@ -8,4 +8,40 @@ Add Elastic Search to boot time:
   
   
 Create server block:
-  
+ 
+  server {
+      listen 80;
+
+      server_name search.yxl.no;
+      set $state state;
+      set $authenticated yes;
+
+      location / {
+
+          if ($request_filename ~ "_shutdown"){
+              return 403;
+              break;
+          }
+
+          if ($request_method ~ "DELETE|POST|UPDATE"){
+              set $state  "${state}+api_call";
+          }
+
+          if ($http_auth != "YOUR_KEY") {
+              set $state "${state}+not_authenticated";
+          }
+        
+          if ($state = "state+api_call+not_authenticated") {
+              return 403;
+              break;
+          }
+
+          proxy_pass http://localhost:9200;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_cache_bypass $http_upgrade;
+
+      }
+ }
