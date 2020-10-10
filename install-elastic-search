@@ -1,0 +1,11 @@
+Follow the tutorial here:
+  https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html#install-deb
+
+Add Elastic Search to boot time:
+  sudo /bin/systemctl daemon-reload
+  sudo /bin/systemctl enable elasticsearch.service
+  sudo systemctl start elasticsearch.service
+  
+  
+Create server block:
+  
