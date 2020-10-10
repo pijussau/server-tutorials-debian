@@ -45,3 +45,5 @@ Create server block:
 
       }
  }
+ 
+ sudo ln -s /etc/nginx/sites-available/search.yxl.no /etc/nginx/sites-enabled/
