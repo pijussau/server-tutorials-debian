@@ -1,0 +1,88 @@
+How to install MySQL and PhpMyAdmin:
+
+  Find the latest MySQL repo at: https://dev.mysql.com/downloads/repo/apt/
+  
+  wget http://repo.mysql.com/mysql-apt-config_0.8.13-1_all.deb
+  sudo apt install ./mysql-apt-config_0.8.13-1_all.deb
+  sudo apt update
+  sudo apt install mysql-server
+  sudo mysql_secure_installation
+  service mysql start
+  
+  To install PHPMyAdmin:
+    sudo apt install nginx
+    sudo ufw app list
+    sudo ufw allow 'Nginx HTTPS'
+    service nginx start
+    
+    cd /var/www
+    wget https://files.phpmyadmin.net/phpMyAdmin/5.0.3/phpMyAdmin-5.0.3-all-languages.zip
+    unzip phpMyAdmin-5.0.3-all-languages.zip (and delete setup folder)
+    sudo mkdir /var/www/phpmyadmin/tmp
+    sudo chmod 777 /var/www/phpmyadmin/tmp
+    sudo cp -pr /var/www/phpmyadmin/config.sample.inc.php /var/www/phpmyadmin/config.inc.php
+    sudo nano /var/www/phpmyadmin/config.inc.php
+    Add a blowFish password and save the file
+    
+    
+  To setup a server block:
+    sudo nano /etc/nginx/sites-available/pma.supportdedicated.com
+  
+    Add a server block:
+    
+    server {
+      listen 80;
+      server_name pma.supportdedicated.com;
+      root /var/www/phpmyadmin;
+
+      location / {
+          index index.php;
+      }
+
+      location ~* ^.+.(jpg|jpeg|gif|css|png|js|ico|xml)$ {
+          access_log off;
+          expires 30d;
+      }
+
+      location ~ /\.ht {
+          deny all;
+      }
+
+      location ~ /(libraries|setup/frames|setup/libs) {
+          deny all;
+          return 404;
+      }
+
+      location ~ \.php$ {
+          include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+      }
+    }
+      
+    sudo ln -s /etc/nginx/sites-available/pma.supportdedicated.com /etc/nginx/sites-enabled/
+    service nginx restart
+    service php7.4-fpm restart
+     
+    To setup PHP 7.4:
+      sudo apt -y install lsb-release apt-transport-https ca-certificates
+      sudo wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+      echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/php.list
+      sudo apt update
+      sudo apt install php7.4
+      sudo apt-get install php7.4-{bcmath,bz2,intl,gd,mbstring,mysql,zip}
+      sudo systemctl disable --now apache2
+      sudo apt-get install nginx php7.4-fpm
+      
+    To install Certbot:
+      sudo add-apt-repository ppa:certbot/certbot
+      sudo apt install python3-acme python3-certbot python3-mock python3-openssl python3-pkg-resources python3-pyparsing python3-zope.interface
+      sudo apt install python3-certbot-nginx
+      sudo certbot --nginx -d pma.supportdedicated.com
+      
+      or:
+        add-apt-repository ppa:certbot/certbot
+        apt-get update
+        apt-get install python-certbot-nginx
+      
+      Inside crontab -e
+        17 7 * * * certbot renew --post-hook "systemctl reload nginx"
