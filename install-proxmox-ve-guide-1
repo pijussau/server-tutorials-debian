@@ -1,0 +1,8 @@
+To enable better monitoring:
+
+  On guest machine:
+    apt-get install qemu-guest-agent
+    systemctl start qemu-guest-agent
+  
+  On host machine:
+    Inside VM -> Options > Enable QEMU Guest Agent
