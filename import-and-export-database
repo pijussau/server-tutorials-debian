@@ -1,0 +1,7 @@
+To import a database:
+  mysql -u root -p
+  use <database_name>
+  source /file_name
+  
+To export a database:
+  Another command
