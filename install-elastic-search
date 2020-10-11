@@ -5,7 +5,9 @@ Add Elastic Search to boot time:
   sudo /bin/systemctl daemon-reload
   sudo /bin/systemctl enable elasticsearch.service
   sudo systemctl start elasticsearch.service
-  
+
+Install Nginx:
+   apt-get install nginx
   
 Create server block:
  
@@ -47,3 +49,9 @@ Create server block:
  }
  
  sudo ln -s /etc/nginx/sites-available/search.yxl.no /etc/nginx/sites-enabled/
+ service nginx restart
+ 
+ Add Let's Encrypt:
+ sudo apt install certbot python3-certbot-nginx
+ sudo ufw allow 'Nginx Full'
+ sudo certbot --nginx -d search.yxl.no
